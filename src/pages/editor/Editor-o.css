@@ -1,0 +1,43 @@
+.tag-wrapper {
+  /* @apply overflow-hidden */
+  @apply flex items-center justify-start;
+}
+
+.tag-body {
+  @apply bg-blue-500;
+}
+
+.tag-body-start {
+  @apply pl-2 pr-1;
+}
+
+.tag-body-end {
+  @apply pl-1 pr-2;
+}
+
+.tag-arrow {
+  border-color: transparent transparent transparent;
+  @apply inline-block;
+}
+
+.tag-arrow-right {
+  border-width: 12.5px 0 12.5px 12px;
+  @apply border-l-blue-500;
+}
+
+.tag-arrow-left {
+  border-width: 12.5px 12.5px 12px 0;
+  @apply border-r-blue-500;
+}
+
+/* <div {...props.attributes}>
+  <p className="tag-wrapper">
+    <span className="tag-body tag-body-start">sss</span>
+    <span className="tag-arrow tag-arrow-right"></span>
+  </p>
+  <div className="min-h-10"></div>
+  <p className="tag-wrapper">
+    <span className="tag-arrow tag-arrow-left"></span>
+    <span className="tag-body tag-body-end">sss</span>
+  </p>
+</div> */

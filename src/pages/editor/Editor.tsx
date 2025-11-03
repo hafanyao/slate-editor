@@ -1,7 +1,15 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Editor, Element, Transforms, createEditor } from 'slate';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
+import {
+  Slate,
+  Editable,
+  withReact,
+  ReactEditor,
+  type RenderLeafProps,
+} from 'slate-react';
 import { CustomEditor } from '../../utils/Slate/Editor';
+import { Leaf as LeafForm } from './LeafForm';
+import { Element as CustomElement } from '../editor/Element';
 import './Editor.css';
 
 const EditorApp: React.FC = () => {
@@ -26,7 +34,16 @@ const EditorApp: React.FC = () => {
               nodeType: 'element',
               type: 'content',
               attributes: {},
-              children: [],
+              children: [
+                {
+                  nodeType: 'element',
+                  type: 'image',
+                  attributes: {
+                    src: '/public/vite.svg',
+                  },
+                  children: [],
+                },
+              ],
             },
           ],
         },
@@ -46,58 +63,15 @@ const EditorApp: React.FC = () => {
     []
   );
 
-  const Leaf = props => {
-    const fontWeight = props.leaf.bold ? 'bold' : 'normal';
-    console.log(fontWeight);
-    return (
-      <span {...props.attributes} style={{ fontWeight }}>
-        {props.children}
-      </span>
-    );
-  };
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <LeafForm {...props} />,
+    []
+  );
 
-  const renderLeaf = useCallback(props => {
-    return <Leaf {...props} />;
-  }, []);
-
-  // const renderElementFn = useCallback(
-  //   (props: any) => <renderElement {...props} />,
-  //   []
-  // );
-
-  const CodeElement = props => {
-    return (
-      <pre {...props.attributes}>
-        <code>{props.children}</code>
-      </pre>
-    );
-  };
-
-  const DefaultElement = props => {
-    return <p {...props.attributes}>{props.children}</p>;
-  };
-
-  const DModuleElement = props => {
-    console.log(props);
-    return (
-      <div {...props.attributes}>
-        <span className="dmodule-span right-arrow">sss</span>
-        <div className="min-h-10"></div>
-        <span className="dmodule-span left-arrow">sss</span>
-      </div>
-    );
-  };
-
-  const renderElement = useCallback(props => {
-    switch (props.element.type) {
-      case 'code':
-        return <CodeElement {...props} />;
-      case 'dmodule':
-        return <DModuleElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
+  const renderElement = useCallback(
+    (props: any) => <CustomElement {...props} />,
+    []
+  );
 
   return (
     <div className="page-container">
@@ -116,29 +90,9 @@ const EditorApp: React.FC = () => {
             // }
           }}>
           <Editable
+            className="p-2 outline-none"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
-            // onKeyDown={handleKeyDown}
-            onKeyDown={event => {
-              if (!event.ctrlKey) return;
-              switch (event.key) {
-                case '`': {
-                  event.preventDefault();
-                  CustomEditor.toggleCodeBlock(editor);
-                  break;
-                }
-                case 'b': {
-                  event.preventDefault();
-                  CustomEditor.toggleBoldMark(editor);
-                  break;
-                }
-                case 'Enter': {
-                  event.preventDefault();
-                  CustomEditor.getCursorPos(editor);
-                  break;
-                }
-              }
-            }}
           />
         </Slate>
       </div>

@@ -1,5 +1,5 @@
 .dmodule-span {
-  @apply inline-flex items-center h-[20px] relative text-white bg-blue-500;
+  @apply inline-flex items-center h-[20px] relative bg-blue-500;
 }
 
 .right-arrow {
