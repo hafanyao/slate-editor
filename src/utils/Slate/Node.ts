@@ -1,8 +1,8 @@
-import { Node } from 'slate'
+import { Node } from 'slate';
 
 export const CustomNode = {
   ...Node,
-}
+};
 
 // 最重要的类型是Node对象：
 //     —— Editor 包含整个文档内容的根节点。

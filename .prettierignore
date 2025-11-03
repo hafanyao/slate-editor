@@ -1,0 +1,9 @@
+**/.hg
+**/.git
+**/dist
+**/node_modules
+
+node_modules
+components.d.ts
+typed-router.d.ts
+typed-components.d.ts

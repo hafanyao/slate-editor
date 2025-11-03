@@ -1,97 +1,113 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Editor, Element, Transforms, createEditor } from 'slate'
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+import { Editor, Element, Transforms, createEditor } from 'slate';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 
 const CustomEditor = {
   isBoldMarkActive(editor) {
-    const marks = Editor.marks(editor)
-    return marks ? marks.bold === true : false
+    const marks = Editor.marks(editor);
+    return marks ? marks.bold === true : false;
   },
 
   isCodeBlockActive(editor) {
     const [match] = Editor.nodes(editor, {
       match: n => n.type === 'code',
-    })
-    return !!match
+    });
+    return !!match;
   },
 
   toggleBoldMark(editor) {
-    const isActive = CustomEditor.isBoldMarkActive(editor)
+    const isActive = CustomEditor.isBoldMarkActive(editor);
     if (isActive) {
-      Editor.removeMark(editor, 'bold')
+      Editor.removeMark(editor, 'bold');
     } else {
-      Editor.addMark(editor, 'bold', true)
+      Editor.addMark(editor, 'bold', true);
     }
   },
 
   toggleCodeBlock(editor) {
-    const isActive = CustomEditor.isCodeBlockActive(editor)
+    const isActive = CustomEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
       editor,
       { type: isActive ? null : 'code' },
       { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
-    )
+    );
   },
-}
+};
 
 const EditorApp: React.FC = () => {
-  const [editor] = useState(() => withReact(createEditor()))
+  const [editor] = useState(() => withReact(createEditor()));
 
   const initialValue = useMemo(
     () =>
       JSON.parse(localStorage.getItem('content')) || [
         {
+          nodeType: 'element',
+          type: 'dmodule',
+          attributes: {},
+          children: [
+            {
+              nodeType: 'element',
+              type: 'identAndStatusSection',
+              attributes: {},
+              children: [],
+            },
+            {
+              nodeType: 'element',
+              type: 'content',
+              attributes: {},
+              children: [],
+            },
+          ],
+        },
+        {
           type: 'paragraph',
           children: [
             { text: 'A line of text in a paragraph.' },
-            { 
+            {
               type: 'link',
               url: 'https://example.com',
               text: 'link',
               bold: true,
-            }
+            },
           ],
         },
       ],
     []
-  )
+  );
 
   const CodeElement = props => {
     return (
       <pre {...props.attributes}>
         <code>{props.children}</code>
       </pre>
-    )
-  }
+    );
+  };
   const DefaultElement = props => {
-    return <p {...props.attributes}>{props.children}</p>
-  }
+    return <p {...props.attributes}>{props.children}</p>;
+  };
 
   const renderElement = useCallback(props => {
     switch (props.element.type) {
       case 'code':
-        return <CodeElement {...props} />
+        return <CodeElement {...props} />;
       default:
-        return <DefaultElement {...props} />
+        return <DefaultElement {...props} />;
     }
-  }, [])
+  }, []);
 
   const Leaf = props => {
-    const fontWeight = props.leaf.bold ? 'bold' : 'normal'
+    const fontWeight = props.leaf.bold ? 'bold' : 'normal';
     console.log(fontWeight);
     return (
-      <span
-        {...props.attributes}
-        style={{ fontWeight }}
-      >
+      <span {...props.attributes} style={{ fontWeight }}>
         {props.children}
       </span>
-    )
-  }
+    );
+  };
 
   const renderLeaf = useCallback(props => {
-    return <Leaf {...props} />
-  }, [])
+    return <Leaf {...props} />;
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -112,7 +128,7 @@ const EditorApp: React.FC = () => {
         console.log(rect);
       }
     },
-    [editor],
+    [editor]
   );
 
   return (
@@ -136,17 +152,17 @@ const EditorApp: React.FC = () => {
             renderElement={renderElement}
             // onKeyDown={handleKeyDown}
             onKeyDown={event => {
-              if (!event.ctrlKey) return
+              if (!event.ctrlKey) return;
               switch (event.key) {
                 case '`': {
-                  event.preventDefault()
-                  CustomEditor.toggleCodeBlock(editor)
-                  break
+                  event.preventDefault();
+                  CustomEditor.toggleCodeBlock(editor);
+                  break;
                 }
                 case 'b': {
-                  event.preventDefault()
-                  CustomEditor.toggleBoldMark(editor)
-                  break
+                  event.preventDefault();
+                  CustomEditor.toggleBoldMark(editor);
+                  break;
                 }
               }
             }}

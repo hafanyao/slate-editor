@@ -1,19 +1,19 @@
-import { Editor, Transforms } from 'slate'
+import { Editor, Transforms } from 'slate';
 
 export const CustomEditor = {
   ...Editor,
   insertImage(editor, url) {
-    const element = { type: 'image', url, children: [{ text: '' }] }
-    Transforms.insertNodes(editor, element)
+    const element = { type: 'image', url, children: [{ text: '' }] };
+    Transforms.insertNodes(editor, element);
   },
   insertParagraph(editor: any, text: string = '') {
     // 插入一个空段落
     Transforms.insertNodes(editor, {
       type: 'paragraph',
       children: [{ text }],
-    })
+    });
   },
-}
+};
 
 // Slate 编辑器的顶级 Editor 对象
 // interface Editor {

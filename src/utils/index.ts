@@ -1,1 +1,1 @@
-export * from './Slate'
+export * from './Slate';

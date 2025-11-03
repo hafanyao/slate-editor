@@ -1,8 +1,8 @@
-import { Range } from 'slate'
+import { Range } from 'slate';
 
 export const CustomRange = {
   ...Range,
-}
+};
 
 // const [start, end] = Range.edges(range)
 
