@@ -8,8 +8,8 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
-import Editor from './pages/Editor';
 import About from './pages/About';
+import Editor from './pages/editor/Editor';
 
 // 路由菜单组件
 const AppMenu: React.FC = () => {

@@ -1,0 +1,26 @@
+.dmodule-span {
+  @apply inline-flex items-center h-[20px] relative text-white bg-blue-500;
+}
+
+.right-arrow {
+  @apply rounded-tl-sm rounded-bl-sm pl-2 pr-1;
+}
+
+.right-arrow::after {
+  content: '';
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent;
+  @apply absolute top-0 right-[-10px] border-l-blue-500;
+}
+
+.left-arrow {
+  margin-left: 10px;
+  @apply rounded-tr-sm rounded-br-sm pl-1 pr-2;
+}
+
+.left-arrow::after {
+  content: '';
+  border-width: 10px 10px 10px 0;
+  border-color: transparent transparent transparent transparent;
+  @apply absolute top-0 left-[-10px] border-r-blue-500;
+}

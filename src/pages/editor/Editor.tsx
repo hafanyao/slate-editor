@@ -1,48 +1,19 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Editor, Element, Transforms, createEditor } from 'slate';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
-
-const CustomEditor = {
-  isBoldMarkActive(editor) {
-    const marks = Editor.marks(editor);
-    return marks ? marks.bold === true : false;
-  },
-
-  isCodeBlockActive(editor) {
-    const [match] = Editor.nodes(editor, {
-      match: n => n.type === 'code',
-    });
-    return !!match;
-  },
-
-  toggleBoldMark(editor) {
-    const isActive = CustomEditor.isBoldMarkActive(editor);
-    if (isActive) {
-      Editor.removeMark(editor, 'bold');
-    } else {
-      Editor.addMark(editor, 'bold', true);
-    }
-  },
-
-  toggleCodeBlock(editor) {
-    const isActive = CustomEditor.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? null : 'code' },
-      { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
-    );
-  },
-};
+import { CustomEditor } from '../../utils/Slate/Editor';
+import './Editor.css';
 
 const EditorApp: React.FC = () => {
   const [editor] = useState(() => withReact(createEditor()));
 
   const initialValue = useMemo(
     () =>
-      JSON.parse(localStorage.getItem('content')) || [
+      // JSON.parse(localStorage.getItem('content')) ||
+      [
         {
-          nodeType: 'element',
           type: 'dmodule',
+          nodeType: 'element',
           attributes: {},
           children: [
             {
@@ -75,26 +46,6 @@ const EditorApp: React.FC = () => {
     []
   );
 
-  const CodeElement = props => {
-    return (
-      <pre {...props.attributes}>
-        <code>{props.children}</code>
-      </pre>
-    );
-  };
-  const DefaultElement = props => {
-    return <p {...props.attributes}>{props.children}</p>;
-  };
-
-  const renderElement = useCallback(props => {
-    switch (props.element.type) {
-      case 'code':
-        return <CodeElement {...props} />;
-      default:
-        return <DefaultElement {...props} />;
-    }
-  }, []);
-
   const Leaf = props => {
     const fontWeight = props.leaf.bold ? 'bold' : 'normal';
     console.log(fontWeight);
@@ -109,27 +60,44 @@ const EditorApp: React.FC = () => {
     return <Leaf {...props} />;
   }, []);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        // 如果正在输入文本，不触发上下文菜单
-        if (ReactEditor.isComposing(editor)) {
-          return;
-        }
-        e.preventDefault();
-        // 计算上下文菜单位置
-        const { selection } = editor;
-        if (!selection) return;
-        // 根据当前光标位置计算上下文菜单位置
-        const { anchor } = selection;
-        const range = Editor.range(editor, anchor.path, anchor.path);
-        const nativeRange = ReactEditor.toDOMRange(editor, range);
-        const rect = nativeRange.getBoundingClientRect();
-        console.log(rect);
-      }
-    },
-    [editor]
-  );
+  // const renderElementFn = useCallback(
+  //   (props: any) => <renderElement {...props} />,
+  //   []
+  // );
+
+  const CodeElement = props => {
+    return (
+      <pre {...props.attributes}>
+        <code>{props.children}</code>
+      </pre>
+    );
+  };
+
+  const DefaultElement = props => {
+    return <p {...props.attributes}>{props.children}</p>;
+  };
+
+  const DModuleElement = props => {
+    console.log(props);
+    return (
+      <div {...props.attributes}>
+        <span className="dmodule-span right-arrow">sss</span>
+        <div className="min-h-10"></div>
+        <span className="dmodule-span left-arrow">sss</span>
+      </div>
+    );
+  };
+
+  const renderElement = useCallback(props => {
+    switch (props.element.type) {
+      case 'code':
+        return <CodeElement {...props} />;
+      case 'dmodule':
+        return <DModuleElement {...props} />;
+      default:
+        return <DefaultElement {...props} />;
+    }
+  }, []);
 
   return (
     <div className="page-container">
@@ -162,6 +130,11 @@ const EditorApp: React.FC = () => {
                 case 'b': {
                   event.preventDefault();
                   CustomEditor.toggleBoldMark(editor);
+                  break;
+                }
+                case 'Enter': {
+                  event.preventDefault();
+                  CustomEditor.getCursorPos(editor);
                   break;
                 }
               }

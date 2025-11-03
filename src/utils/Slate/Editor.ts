@@ -13,6 +13,51 @@ export const CustomEditor = {
       children: [{ text }],
     });
   },
+  isBoldMarkActive(editor) {
+    const marks = Editor.marks(editor);
+    return marks ? marks.bold === true : false;
+  },
+
+  isCodeBlockActive(editor) {
+    const [match] = Editor.nodes(editor, {
+      match: n => n.type === 'code',
+    });
+    return !!match;
+  },
+
+  toggleBoldMark(editor) {
+    const isActive = CustomEditor.isBoldMarkActive(editor);
+    if (isActive) {
+      Editor.removeMark(editor, 'bold');
+    } else {
+      Editor.addMark(editor, 'bold', true);
+    }
+  },
+
+  toggleCodeBlock(editor) {
+    const isActive = CustomEditor.isCodeBlockActive(editor);
+    Transforms.setNodes(
+      editor,
+      { type: isActive ? null : 'code' },
+      { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
+    );
+  },
+
+  getCursorPos(editor) {
+    // 如果正在输入文本，不触发上下文菜单
+    if (ReactEditor.isComposing(editor)) {
+      return;
+    }
+    // 计算上下文菜单位置
+    const { selection } = editor;
+    if (!selection) return;
+    // 根据当前光标位置计算上下文菜单位置
+    const { anchor } = selection;
+    const range = Editor.range(editor, anchor.path, anchor.path);
+    const nativeRange = ReactEditor.toDOMRange(editor, range);
+    const rect = nativeRange.getBoundingClientRect();
+    console.log(rect);
+  },
 };
 
 // Slate 编辑器的顶级 Editor 对象
