@@ -1,5 +1,6 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { createEditor } from 'slate';
+import { withHistory } from 'slate-history';
 import {
   Slate,
   Editable,
@@ -14,22 +15,29 @@ import { Element as CustomElement } from '../editor/Element';
 import './Editor.css';
 
 const EditorApp: React.FC = () => {
-  const [editor] = useState(() => withReact(createEditor()));
+  const [editor] = useState(() => withReact(withHistory(createEditor())));
 
   const initialValue = useMemo(
     () =>
       // JSON.parse(localStorage.getItem('content')) ||
       [
         {
-          type: 'dmodule',
           nodeType: 'element',
+          type: 'dmodule',
           attributes: {},
           children: [
             {
               nodeType: 'element',
               type: 'identAndStatusSection',
               attributes: {},
-              children: [],
+              children: [
+                {
+                  nodeType: 'element',
+                  type: 'dmAddress',
+                  attributes: {},
+                  children: [],
+                },
+              ],
             },
             {
               nodeType: 'element',
@@ -38,25 +46,18 @@ const EditorApp: React.FC = () => {
               children: [
                 {
                   nodeType: 'element',
-                  type: 'image',
-                  attributes: {
-                    src: '/public/vite.svg',
-                  },
-                  children: [],
+                  type: 'refs',
+                  attributes: {},
+                  children: [
+                    {
+                      nodeType: 'element',
+                      type: 'pmRef',
+                      attributes: {},
+                      children: [],
+                    },
+                  ],
                 },
               ],
-            },
-          ],
-        },
-        {
-          type: 'paragraph',
-          children: [
-            { text: 'A line of text in a paragraph.' },
-            {
-              type: 'link',
-              url: 'https://example.com',
-              text: 'link',
-              bold: true,
             },
           ],
         },
@@ -78,6 +79,10 @@ const EditorApp: React.FC = () => {
     (event: KeyboardEvent) => onKeyDown({ event, editor }),
     [editor]
   );
+
+  useEffect(() => {
+    CustomEditor.normalize(editor, { force: true });
+  }, [editor]);
 
   return (
     <div className="page-container">
@@ -103,6 +108,7 @@ const EditorApp: React.FC = () => {
           />
         </Slate>
       </div>
+      <img src="/demo.png" />
     </div>
   );
 };

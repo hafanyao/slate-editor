@@ -1,3 +1,5 @@
+// import { XmlDom } from './demo/XmlDom';
+
 const CodeElement = props => {
   return (
     <pre {...props.attributes}>
@@ -15,35 +17,15 @@ const ImageElement = props => {
 };
 
 const DefaultElement = props => {
-  return <p {...props.attributes}>{props.children}</p>;
-};
-
-const ContentElement = props => {
   return (
     <div {...props.attributes}>
-      <span className="dmodule-span right-arrow">{props.element.type}</span>
+      <span className="dmodule-span right-arrow" contentEditable={false}>
+        - {props.element.type}
+      </span>
       <div className="min-h-6">{props.children}</div>
-      <span className="dmodule-span left-arrow">{props.element.type}</span>
-    </div>
-  );
-};
-
-const DModuleElement = props => {
-  return (
-    <div {...props.attributes}>
-      <span className="dmodule-span right-arrow">{props.element.type}</span>
-      <div className="min-h-6">{props.children}</div>
-      <span className="dmodule-span left-arrow">{props.element.type}</span>
-    </div>
-  );
-};
-
-const IdentAndStatusSectionElement = props => {
-  return (
-    <div {...props.attributes}>
-      <span className="dmodule-span right-arrow">{props.element.type}</span>
-      <div className="min-h-6">{props.children}</div>
-      <span className="dmodule-span left-arrow">{props.element.type}</span>
+      <span className="dmodule-span left-arrow" contentEditable={false}>
+        {props.element.type}
+      </span>
     </div>
   );
 };
@@ -55,12 +37,6 @@ export const Element = (props: any) => {
       return <CodeElement {...props} />;
     case 'image':
       return <ImageElement {...props} />;
-    case 'content':
-      return <ContentElement {...props} />;
-    case 'dmodule':
-      return <DModuleElement {...props} />;
-    case 'identAndStatusSection':
-      return <IdentAndStatusSectionElement {...props} />;
     default:
       return <DefaultElement {...props} />;
     // case 'block-quote':
