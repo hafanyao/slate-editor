@@ -1,4 +1,5 @@
 import { Editor, Transforms } from 'slate';
+import { ReactEditor } from 'slate-react';
 
 export const CustomEditor = {
   ...Editor,
@@ -46,19 +47,21 @@ export const CustomEditor = {
   getCursorPos(editor) {
     // 如果正在输入文本，不触发上下文菜单
     if (ReactEditor.isComposing(editor)) {
-      return;
+      return console.log(ReactEditor.isComposing(editor), '----');
     }
     // 计算上下文菜单位置
     const { selection } = editor;
-    if (!selection) return;
+    if (!selection) return console.log(selection, '====');
     // 根据当前光标位置计算上下文菜单位置
     const { anchor } = selection;
     const range = Editor.range(editor, anchor.path, anchor.path);
     const nativeRange = ReactEditor.toDOMRange(editor, range);
     const rect = nativeRange.getBoundingClientRect();
-    console.log(rect);
+    return rect;
   },
 };
+
+// 追加内容：editor.insertText('and')
 
 // Slate 编辑器的顶级 Editor 对象
 // interface Editor {

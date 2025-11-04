@@ -22,7 +22,7 @@ const ContentElement = props => {
   return (
     <div {...props.attributes}>
       <span className="dmodule-span right-arrow">{props.element.type}</span>
-      <div className="min-h-10">{props.children}</div>
+      <div className="min-h-6">{props.children}</div>
       <span className="dmodule-span left-arrow">{props.element.type}</span>
     </div>
   );
@@ -32,7 +32,7 @@ const DModuleElement = props => {
   return (
     <div {...props.attributes}>
       <span className="dmodule-span right-arrow">{props.element.type}</span>
-      <div className="min-h-10">{props.children}</div>
+      <div className="min-h-6">{props.children}</div>
       <span className="dmodule-span left-arrow">{props.element.type}</span>
     </div>
   );
@@ -42,7 +42,7 @@ const IdentAndStatusSectionElement = props => {
   return (
     <div {...props.attributes}>
       <span className="dmodule-span right-arrow">{props.element.type}</span>
-      <div className="min-h-10">{props.children}</div>
+      <div className="min-h-6">{props.children}</div>
       <span className="dmodule-span left-arrow">{props.element.type}</span>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Editor, Element, Transforms, createEditor } from 'slate';
+import { createEditor } from 'slate';
 import {
   Slate,
   Editable,
@@ -8,6 +8,7 @@ import {
   type RenderLeafProps,
 } from 'slate-react';
 import { CustomEditor } from '../../utils/Slate/Editor';
+import { onKeyDown } from '../editor/KeyDown';
 import { Leaf as LeafForm } from './LeafForm';
 import { Element as CustomElement } from '../editor/Element';
 import './Editor.css';
@@ -73,6 +74,11 @@ const EditorApp: React.FC = () => {
     []
   );
 
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => onKeyDown({ event, editor }),
+    [editor]
+  );
+
   return (
     <div className="page-container">
       <h2>Slate编辑器</h2>
@@ -93,14 +99,12 @@ const EditorApp: React.FC = () => {
             className="p-2 outline-none"
             renderLeaf={renderLeaf}
             renderElement={renderElement}
+            onKeyDown={handleKeyDown}
           />
         </Slate>
       </div>
     </div>
   );
 };
-
-// 追加内容：editor.insertText('and')
-// 选择全部内容：Transforms.select(editor, [])
 
 export default EditorApp;
