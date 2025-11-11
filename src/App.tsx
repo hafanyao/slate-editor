@@ -9,7 +9,7 @@ import {
 import './App.css';
 import Home from './pages/Home';
 import About from './pages/About';
-import Editor from './pages/editor/Editor';
+import Editor from './pages/editor';
 
 // 路由菜单组件
 const AppMenu: React.FC = () => {

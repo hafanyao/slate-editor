@@ -3,30 +3,30 @@ import { ReactEditor } from 'slate-react';
 
 export const CustomEditor = {
   ...Editor,
-  insertImage(editor, url) {
+  insertImage(editor: Editor, url) {
     const element = { type: 'image', url, children: [{ text: '' }] };
     Transforms.insertNodes(editor, element);
   },
-  insertParagraph(editor: any, text: string = '') {
+  insertParagraph(editor: Editor, text: string = '') {
     // 插入一个空段落
     Transforms.insertNodes(editor, {
       type: 'paragraph',
       children: [{ text }],
     });
   },
-  isBoldMarkActive(editor) {
+  isBoldMarkActive(editor: Editor) {
     const marks = Editor.marks(editor);
     return marks ? marks.bold === true : false;
   },
 
-  isCodeBlockActive(editor) {
+  isCodeBlockActive(editor: Editor) {
     const [match] = Editor.nodes(editor, {
       match: n => n.type === 'code',
     });
     return !!match;
   },
 
-  toggleBoldMark(editor) {
+  toggleBoldMark(editor: Editor) {
     const isActive = CustomEditor.isBoldMarkActive(editor);
     if (isActive) {
       Editor.removeMark(editor, 'bold');
@@ -35,7 +35,7 @@ export const CustomEditor = {
     }
   },
 
-  toggleCodeBlock(editor) {
+  toggleCodeBlock(editor: Editor) {
     const isActive = CustomEditor.isCodeBlockActive(editor);
     Transforms.setNodes(
       editor,
@@ -44,7 +44,7 @@ export const CustomEditor = {
     );
   },
 
-  getCursorPos(editor) {
+  getCursorPos(editor: Editor) {
     // 如果正在输入文本，不触发上下文菜单
     if (ReactEditor.isComposing(editor)) {
       console.log('!isComposing');

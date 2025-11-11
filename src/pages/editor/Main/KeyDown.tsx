@@ -1,7 +1,7 @@
 import { Editor } from 'slate';
 import { type KeyboardEvent } from 'react';
-import { useGlobalStore } from '../../store';
-import { CustomEditor } from '../../utils/slate/editor';
+import { useGlobalStore } from '../../../store';
+import { CustomEditor } from '../../../utils/slate/editor';
 
 // 将 onKeyDown 转换为自定义 Hook
 // 这样就可以在内部使用 useGlobalStore
