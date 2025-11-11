@@ -1,4 +1,4 @@
-import { Editor } from 'slate';
+import type { Editor } from 'slate';
 
 // 将图像节点标记为 “void”
 export const withImages = (editor: Editor) => {

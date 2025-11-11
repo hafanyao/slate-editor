@@ -6,6 +6,9 @@ import {
   UnderlineOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
+import { useEditorStore } from '../../../store';
+import { ReactEditor } from 'slate-react';
+import { CustomEditor } from '../../../utils';
 
 interface Tool {
   type: string;
@@ -44,8 +47,29 @@ const tools = [
 ];
 
 const HeaderBar: React.FC = () => {
+  const { editorIns } = useEditorStore();
+
   const handleClick = (tool: Tool) => {
     console.log(tool);
+    switch (tool.type) {
+      case 'bold':
+        CustomEditor.toggleBoldMark(editorIns);
+        break;
+      //   case 'italic':
+      //     ReactEditor.toggleMark(editorIns, 'italic');
+      //     break;
+      //   case 'underline':
+      //     ReactEditor.toggleMark(editorIns, 'underline');
+      //     break;
+      //   case 'ordered-list':
+      //     ReactEditor.toggleBlockType(editorIns, 'ordered-list');
+      //     break;
+      //   case 'unordered-list':
+      //     ReactEditor.toggleBlockType(editorIns, 'unordered-list');
+      //     break;
+      default:
+        break;
+    }
   };
 
   return (

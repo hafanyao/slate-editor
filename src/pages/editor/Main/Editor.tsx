@@ -8,7 +8,7 @@ import {
   ReactEditor,
   type RenderLeafProps,
 } from 'slate-react';
-import { useGlobalStore } from '../../../store';
+import { useGlobalStore, useEditorStore } from '../../../store';
 import HeaderBar from './HeaderBar';
 import { useOnKeyDown } from './KeyDown';
 import { Leaf as LeafForm } from './LeafForm';
@@ -21,7 +21,14 @@ const EditorMain: React.FC = () => {
   const handleKeyDown = useOnKeyDown();
 
   const { menuPosition } = useGlobalStore();
-  const [editor] = useState(() => withReact(withHistory(createEditor())));
+  const { setEditorIns } = useEditorStore();
+  // const [editor] = useState(() => withReact(withHistory(createEditor())));
+
+  const editor = useMemo(() => {
+    const Instance = withReact(withHistory(createEditor()));
+    setEditorIns(Instance);
+    return Instance;
+  }, []);
 
   const initialValue = useMemo(
     () =>
