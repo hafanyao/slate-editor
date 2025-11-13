@@ -1,11 +1,42 @@
-import { Editor, Transforms } from 'slate';
+import { Editor, Element, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+
+const LIST_TYPES = ['numbered-list', 'bulleted-list'] as const;
+const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'] as const;
+
+type ListType = (typeof LIST_TYPES)[number];
+type AlignType = (typeof TEXT_ALIGN_TYPES)[number];
+
+const isAlignElement = (element: any): element is any => {
+  return 'align' in element;
+};
+
+const isMarkActive = (editor: Editor, format: string) => {
+  const marks = Editor.marks(editor) as any;
+  return marks ? marks[format] === true : false;
+};
+
+const isListType = (format: string): format is ListType => {
+  return LIST_TYPES.includes(format as ListType);
+};
+
+const isAlignType = (format: string): format is AlignType => {
+  return TEXT_ALIGN_TYPES.includes(format as AlignType);
+};
 
 export const CustomEditor = {
   ...Editor,
-  insertImage(editor: Editor, url) {
+  insertImage(editor: Editor, url: string) {
     const element = { type: 'image', url, children: [{ text: '' }] };
     Transforms.insertNodes(editor, element);
+  },
+  toggleMark(editor: Editor, format: string) {
+    const isActive = isMarkActive(editor, format);
+    if (isActive) {
+      Editor.removeMark(editor, format);
+    } else {
+      Editor.addMark(editor, format, true);
+    }
   },
   insertParagraph(editor: Editor, text: string = '') {
     // 插入一个空段落
@@ -26,6 +57,60 @@ export const CustomEditor = {
       Editor.removeMark(editor, 'bold');
     } else {
       Editor.addMark(editor, 'bold', true);
+    }
+  },
+  isBlockActive(
+    editor: Editor,
+    format: string,
+    blockType: 'type' | 'align' = 'type'
+  ) {
+    const { selection } = editor;
+    if (!selection) return false;
+    const [match] = Array.from(
+      Editor.nodes(editor, {
+        at: Editor.unhangRange(editor, selection),
+        match: n => {
+          if (!Editor.isEditor(n) && Element.isElement(n)) {
+            if (blockType === 'align' && isAlignElement(n)) {
+              return n.align === format;
+            }
+            return n.type === format;
+          }
+          return false;
+        },
+      })
+    );
+    return !!match;
+  },
+  toggleBlock(editor: Editor, format: string) {
+    const isActive = CustomEditor.isBlockActive(
+      editor,
+      format,
+      isAlignType(format) ? 'align' : 'type'
+    );
+    const isList = isListType(format);
+    Transforms.unwrapNodes(editor, {
+      match: n =>
+        !Editor.isEditor(n) &&
+        Element.isElement(n) &&
+        isListType(n.type) &&
+        !isAlignType(format),
+      split: true,
+    });
+    let newProperties: Partial<Element>;
+    if (isAlignType(format)) {
+      newProperties = {
+        align: isActive ? undefined : format,
+      };
+    } else {
+      newProperties = {
+        type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+      };
+    }
+    Transforms.setNodes<Element>(editor, newProperties);
+    if (!isActive && isList) {
+      const block = { type: format, children: [] };
+      Transforms.wrapNodes(editor, block);
     }
   },
   // 获取当前鼠标位置
@@ -55,7 +140,7 @@ export const CustomEditor = {
 
 // Slate 编辑器的顶级 Editor 对象
 // interface Editor {
-//   // Current editor state
+//   Current editor state
 //   children: Node[]
 //   selection: Range | null
 //   operations: Operation[]
@@ -66,7 +151,7 @@ export const CustomEditor = {
 //   markableVoid: (element: Element) => boolean
 //   normalizeNode: (entry: NodeEntry) => void
 //   onChange: (options?: { operation?: Operation }) => void
-//   // Overrideable core actions.
+//   Overrideable core actions.
 //   addMark: (key: string, value: any) => void
 //   apply: (operation: Operation) => void
 //   deleteBackward: (unit: 'character' | 'word' | 'line' | 'block') => void

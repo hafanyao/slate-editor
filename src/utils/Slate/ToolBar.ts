@@ -1,16 +1,25 @@
+import type React from 'react';
+import type { Editor } from 'slate';
 import { CustomEditor } from './Editor';
 
-export const clickToolIetm = (tool, editor) => {
+interface Tool {
+  type: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+export const clickToolIetm = (tool: Tool, editor: Editor) => {
   switch (tool.type) {
     case 'bold':
       CustomEditor.toggleBoldMark(editor);
+      // CustomEditor.toggleBlock(editor, tool.type);
       break;
-    //   case 'italic':
-    //     ReactEditor.toggleMark(editorIns, 'italic');
-    //     break;
-    //   case 'underline':
-    //     ReactEditor.toggleMark(editorIns, 'underline');
-    //     break;
+    case 'italic':
+      CustomEditor.toggleMark(editor, tool.type);
+      break;
+    case 'underline':
+      CustomEditor.toggleMark(editor, tool.type);
+      break;
     //   case 'ordered-list':
     //     ReactEditor.toggleBlockType(editorIns, 'ordered-list');
     //     break;

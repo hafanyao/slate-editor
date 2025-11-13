@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -8,13 +8,13 @@ import {
   ReactEditor,
   type RenderLeafProps,
 } from 'slate-react';
-import { useGlobalStore, useEditorStore } from '../../../store';
 import HeaderBar from './HeaderBar';
 import { useOnKeyDown } from './KeyDown';
 import { Leaf as LeafForm } from './LeafForm';
 import { Element as CustomElement } from './Element';
 import GlobalMenu from '../../../components/global/menu';
-import { clickToolIetm, CustomEditor } from '../../../utils/slate';
+import { useGlobalStore, useEditorStore } from '../../../store';
+import { clickToolIetm, CustomEditor } from '../../../utils/Slate';
 import './Editor.css';
 
 const EditorMain: React.FC = () => {
@@ -79,7 +79,7 @@ const EditorMain: React.FC = () => {
   );
 
   // 点击 toolBar
-  const handleClickToolIetm = item => {
+  const handleClickToolIetm = (item: any) => {
     clickToolIetm(item, editor);
   };
 

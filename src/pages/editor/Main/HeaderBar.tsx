@@ -7,12 +7,6 @@ import {
   UnorderedListOutlined,
 } from '@ant-design/icons';
 
-interface Tool {
-  type: string;
-  label: string;
-  icon: React.ReactNode;
-}
-
 const tools = [
   {
     type: 'bold',
