@@ -9,15 +9,15 @@ const EditorApp: React.FC = () => {
   return (
     <div className="h-full">
       <Allotment>
-        <Allotment.Pane minSize={150} maxSize={300} preferredSize={200}>
+        {/* <Allotment.Pane minSize={150} maxSize={300} preferredSize={200}>
           <EditorLeftBar />
-        </Allotment.Pane>
-        <Allotment.Pane minSize={400}>
+        </Allotment.Pane> */}
+        <Allotment.Pane>
           <EditorMain />
         </Allotment.Pane>
-        <Allotment.Pane minSize={150} maxSize={300} preferredSize={200}>
+        {/* <Allotment.Pane minSize={150} maxSize={300} preferredSize={200}>
           <EditorRightBar />
-        </Allotment.Pane>
+        </Allotment.Pane> */}
       </Allotment>
     </div>
   );

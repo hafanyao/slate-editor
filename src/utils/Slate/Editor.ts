@@ -14,18 +14,12 @@ export const CustomEditor = {
       children: [{ text }],
     });
   },
+  // 是否加粗
   isBoldMarkActive(editor: Editor) {
     const marks = Editor.marks(editor);
     return marks ? marks.bold === true : false;
   },
-
-  isCodeBlockActive(editor: Editor) {
-    const [match] = Editor.nodes(editor, {
-      match: n => n.type === 'code',
-    });
-    return !!match;
-  },
-
+  // 切换加粗
   toggleBoldMark(editor: Editor) {
     const isActive = CustomEditor.isBoldMarkActive(editor);
     if (isActive) {
@@ -34,16 +28,7 @@ export const CustomEditor = {
       Editor.addMark(editor, 'bold', true);
     }
   },
-
-  toggleCodeBlock(editor: Editor) {
-    const isActive = CustomEditor.isCodeBlockActive(editor);
-    Transforms.setNodes(
-      editor,
-      { type: isActive ? null : 'code' },
-      { match: n => Element.isElement(n) && Editor.isBlock(editor, n) }
-    );
-  },
-
+  // 获取当前鼠标位置
   getCursorPos(editor: Editor) {
     // 如果正在输入文本，不触发上下文菜单
     if (ReactEditor.isComposing(editor)) {
