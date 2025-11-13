@@ -13,8 +13,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@emotion/css": "^11.13.5",
+    "@types/is-hotkey": "^0.1.10",
     "allotment": "^1.20.4",
     "antd": "6.0.0-alpha.4",
+    "is-hotkey": "^0.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router": "^7.9.4",

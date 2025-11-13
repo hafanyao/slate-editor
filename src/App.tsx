@@ -10,6 +10,7 @@ import './App.css';
 import Home from './pages/Home';
 import About from './pages/About';
 import Editor from './pages/editor';
+import Demo from './pages/demo/richtext';
 
 // 路由菜单组件
 const AppMenu: React.FC = () => {
@@ -17,6 +18,7 @@ const AppMenu: React.FC = () => {
 
   const menuItems = [
     { path: '/', label: '首页' },
+    { path: '/demo', label: '演示' },
     { path: '/editor', label: '编辑器' },
     { path: '/about', label: '关于' },
   ];
@@ -48,6 +50,7 @@ function App() {
           <div className="content-area">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/demo" element={<Demo />} />
               <Route path="/editor" element={<Editor />} />
               <Route path="/about" element={<About />} />
             </Routes>

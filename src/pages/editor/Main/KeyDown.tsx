@@ -23,6 +23,10 @@ export const useOnKeyDown = () => {
         event.preventDefault();
         break;
       }
+      case 'Tab': {
+        CustomEditor.toggleBoldMark(editor);
+        break;
+      }
     }
   };
 
