@@ -65,6 +65,7 @@ export const CustomEditor = {
   },
 };
 
+// const editor = useSlate();
 // 追加内容：editor.insertText('and')
 
 // Slate 编辑器的顶级 Editor 对象
