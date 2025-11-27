@@ -17,8 +17,16 @@ const ImageElement = props => {
 };
 
 const DefaultElement = props => {
+  const handleClickNode = (e: Event) => {
+    console.log(props);
+    e.stopPropagation();
+  };
+
   return (
-    <div {...props.attributes}>
+    <div
+      {...props.attributes}
+      className="cursor-pointer"
+      onClick={e => handleClickNode(e)}>
       <span className="dmodule-span right-arrow" contentEditable={false}>
         - {props.element.type}
       </span>
