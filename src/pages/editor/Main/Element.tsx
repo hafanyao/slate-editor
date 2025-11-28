@@ -1,45 +1,51 @@
 // import { XmlDom } from './demo/XmlDom';
-
-const CodeElement = props => {
-  return (
-    <pre {...props.attributes}>
-      <code>{props.children}</code>
-    </pre>
-  );
-};
-
-const ImageElement = props => {
-  return (
-    <div {...props.attributes}>
-      <img src={props.element.attributes.src} alt="" />
-    </div>
-  );
-};
-
-const DefaultElement = props => {
-  const handleClickNode = (e: Event) => {
-    console.log(props);
-    e.stopPropagation();
-  };
-
-  return (
-    <div
-      {...props.attributes}
-      className="cursor-pointer"
-      onClick={e => handleClickNode(e)}>
-      <span className="dmodule-span right-arrow" contentEditable={false}>
-        - {props.element.type}
-      </span>
-      <div className="min-h-6">{props.children}</div>
-      <span className="dmodule-span left-arrow" contentEditable={false}>
-        {props.element.type}
-      </span>
-    </div>
-  );
-};
+import type { NodeItem } from '../types';
+import { useEditorStore } from '@/store';
 
 export const Element = (props: any) => {
+  const { setCurNode } = useEditorStore();
+
   const { attributes, children, element } = props;
+
+  const CodeElement = () => {
+    return (
+      <pre {...attributes}>
+        <code>{children}</code>
+      </pre>
+    );
+  };
+
+  const ImageElement = () => {
+    return (
+      <div {...attributes}>
+        <img src={element.attributes.src} />
+      </div>
+    );
+  };
+
+  const DefaultElement = () => {
+    const handleClickNode = (e: Event) => {
+      console.log(element);
+      setCurNode(element);
+      e.stopPropagation();
+    };
+
+    return (
+      <div
+        {...attributes}
+        className="cursor-pointer"
+        onClick={e => handleClickNode(e)}>
+        <span className="dmodule-span right-arrow" contentEditable={false}>
+          - {element.type}
+        </span>
+        <div className="min-h-6">{children}</div>
+        <span className="dmodule-span left-arrow" contentEditable={false}>
+          {element.type}
+        </span>
+      </div>
+    );
+  };
+
   switch (element.type) {
     case 'code':
       return <CodeElement {...props} />;

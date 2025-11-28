@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { createEditor } from 'slate';
+import { createEditor, Editor, Transforms, type Node } from 'slate';
 import { Button, message } from 'antd';
 import { withHistory } from 'slate-history';
 import {
@@ -23,9 +23,7 @@ const EditorMain: React.FC = () => {
   const handleKeyDown = useOnKeyDown();
 
   const { menuPosition } = useGlobalStore();
-  const { setEditorIns } = useEditorStore();
-
-  const [curNode, setCurNode] = useState(null);
+  const { curNode, curPath, setEditorIns, setCurPath } = useEditorStore();
 
   // const [editor] = useState(() => withReact(withHistory(createEditor())));
   const editor = useMemo(() => {
@@ -109,21 +107,50 @@ const EditorMain: React.FC = () => {
     CustomEditor.normalize(editor, { force: true });
   }, [editor]);
 
-  const handleCreateNode = (props: { type: string }) => {
+  const handleNode = (props: { type: string }) => {
     const { type } = props;
-    console.log(type);
     switch (type) {
-      case 'getNode': {
-        // 获取 slate 编辑器当前 Node
-        const [node, path] = CustomEditor.node(editor, [0]);
-        console.log('当前 Node:', node, path);
-        break;
-      }
       case 'getPath': {
         // 获取 slate 编辑器当前 Path
         if (!curNode) return message.warning('先获取节点');
         const path = ReactEditor.findPath(editor, curNode);
+        setCurPath(path);
         console.log('当前 Path:', path);
+        break;
+      }
+      case 'addNode': {
+        // 添加 slate 编辑器当前 Node
+        if (!curPath) return message.warning('先获取路径');
+        Transforms.insertNodes(
+          editor,
+          {
+            id: uuidv4(),
+            nodeType: 'element',
+            type: 'code-line',
+            attributes: {},
+            children: [],
+          },
+          { at: curPath }
+        );
+        break;
+      }
+      case 'getNode': {
+        // 获取 slate 编辑器当前 Node
+        const [node, path] = CustomEditor.node(editor, curPath);
+        console.log('当前 Node:', node);
+        break;
+      }
+      case 'delNode': {
+        // 删除 slate 编辑器当前 Node
+        if (!curPath) return message.warning('先获取路径');
+        Transforms.removeNodes(editor, { at: curPath });
+        break;
+      }
+      case 'delText': {
+        // 删除 slate 编辑器当前 Text
+        if (editor.selection) {
+          Editor.deleteFragment(editor);
+        }
         break;
       }
     }
@@ -155,12 +182,21 @@ const EditorMain: React.FC = () => {
           renderElement={renderElement}
           onKeyDown={e => handleKeyDown({ event: e, editor })}
         />
-        <div className="px-5">
-          <Button onClick={() => handleCreateNode({ type: 'getNode' })}>
+        <div className="px-5 flex gap-2">
+          <Button onClick={() => handleNode({ type: 'getPath' })}>
+            getPath
+          </Button>
+          <Button onClick={() => handleNode({ type: 'getNode' })}>
             getNode
           </Button>
-          <Button onClick={() => handleCreateNode({ type: 'getPath' })}>
-            getPath
+          <Button onClick={() => handleNode({ type: 'addNode' })}>
+            addNode
+          </Button>
+          <Button onClick={() => handleNode({ type: 'delNode' })}>
+            delNode
+          </Button>
+          <Button onClick={() => handleNode({ type: 'delText' })}>
+            delText
           </Button>
         </div>
       </Slate>
