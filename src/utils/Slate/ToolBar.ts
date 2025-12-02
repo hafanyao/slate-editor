@@ -12,7 +12,6 @@ export const clickToolIetm = (tool: Tool, editor: Editor) => {
   switch (tool.type) {
     case 'bold':
       CustomEditor.toggleBoldMark(editor);
-      // CustomEditor.toggleBlock(editor, tool.type);
       break;
     case 'italic':
       CustomEditor.toggleMark(editor, tool.type);
@@ -20,12 +19,12 @@ export const clickToolIetm = (tool: Tool, editor: Editor) => {
     case 'underline':
       CustomEditor.toggleMark(editor, tool.type);
       break;
-    //   case 'ordered-list':
-    //     ReactEditor.toggleBlockType(editorIns, 'ordered-list');
-    //     break;
-    //   case 'unordered-list':
-    //     ReactEditor.toggleBlockType(editorIns, 'unordered-list');
-    //     break;
+    case 'numbered-list':
+      CustomEditor.toggleBlock(editor, tool.type);
+      break;
+    case 'bulleted-list':
+      CustomEditor.toggleBlock(editor, tool.type);
+      break;
     default:
       break;
   }

@@ -25,13 +25,13 @@ const tools = [
   },
   // 有序列表
   {
-    type: 'ordered-list',
+    type: 'numbered-list',
     label: '有序列表',
     icon: <OrderedListOutlined />,
   },
   // 无序列表
   {
-    type: 'unordered-list',
+    type: 'bulleted-list',
     label: '无序列表',
     icon: <UnorderedListOutlined />,
   },

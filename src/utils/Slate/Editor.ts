@@ -1,11 +1,16 @@
 import { Editor, Element, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+import {
+  type CustomEditor as CustomEditorType,
+  type CustomElementType,
+} from '../../types/custom-types';
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'] as const;
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'] as const;
 
 type ListType = (typeof LIST_TYPES)[number];
 type AlignType = (typeof TEXT_ALIGN_TYPES)[number];
+type CustomElementFormat = CustomElementType | AlignType | ListType;
 
 const isAlignElement = (element: any): element is any => {
   return 'align' in element;
@@ -24,12 +29,40 @@ const isAlignType = (format: string): format is AlignType => {
   return TEXT_ALIGN_TYPES.includes(format as AlignType);
 };
 
+const isBlockActive = (
+  editor: CustomEditorType,
+  format: CustomElementFormat,
+  blockType: 'type' | 'align' = 'type'
+) => {
+  const { selection } = editor;
+  if (!selection) return false;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: n => {
+        if (!Editor.isEditor(n) && Element.isElement(n)) {
+          if (blockType === 'align' && isAlignElement(n)) {
+            return n.align === format;
+          }
+          return n.type === format;
+        }
+        return false;
+      },
+    })
+  );
+
+  return !!match;
+};
+
 export const CustomEditor = {
   ...Editor,
+  // 插入图片
   insertImage(editor: Editor, url: string) {
     const element = { type: 'image', url, children: [{ text: '' }] };
     Transforms.insertNodes(editor, element);
   },
+  // 加粗、斜体、下划线
   toggleMark(editor: Editor, format: string) {
     const isActive = isMarkActive(editor, format);
     if (isActive) {
@@ -38,8 +71,8 @@ export const CustomEditor = {
       Editor.addMark(editor, format, true);
     }
   },
+  // 插入段落
   insertParagraph(editor: Editor, text: string = '') {
-    // 插入一个空段落
     Transforms.insertNodes(editor, {
       type: 'paragraph',
       children: [{ text }],
@@ -59,36 +92,16 @@ export const CustomEditor = {
       Editor.addMark(editor, 'bold', true);
     }
   },
-  isBlockActive(
-    editor: Editor,
-    format: string,
-    blockType: 'type' | 'align' = 'type'
-  ) {
-    const { selection } = editor;
-    if (!selection) return false;
-    const [match] = Array.from(
-      Editor.nodes(editor, {
-        at: Editor.unhangRange(editor, selection),
-        match: n => {
-          if (!Editor.isEditor(n) && Element.isElement(n)) {
-            if (blockType === 'align' && isAlignElement(n)) {
-              return n.align === format;
-            }
-            return n.type === format;
-          }
-          return false;
-        },
-      })
-    );
-    return !!match;
-  },
-  toggleBlock(editor: Editor, format: string) {
-    const isActive = CustomEditor.isBlockActive(
+  // 标题、有序列表、无序列表
+  toggleBlock(editor: Editor, format: CustomElementFormat) {
+    console.log(format);
+    const isActive = isBlockActive(
       editor,
       format,
       isAlignType(format) ? 'align' : 'type'
     );
     const isList = isListType(format);
+
     Transforms.unwrapNodes(editor, {
       match: n =>
         !Editor.isEditor(n) &&
@@ -108,6 +121,7 @@ export const CustomEditor = {
       };
     }
     Transforms.setNodes<Element>(editor, newProperties);
+
     if (!isActive && isList) {
       const block = { type: format, children: [] };
       Transforms.wrapNodes(editor, block);
